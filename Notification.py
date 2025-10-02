@@ -1,6 +1,6 @@
-from flet import UserControl, SnackBar, Text, TextThemeStyle, DismissDirection, SnackBarBehavior
+from flet import Container, SnackBar, Text, TextThemeStyle, DismissDirection, SnackBarBehavior
 
-class Notification(UserControl):
+class Notification(Container):
     def __init__(self, page, message, color):
         super().__init__()
         self.page = page

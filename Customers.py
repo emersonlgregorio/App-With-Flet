@@ -1,5 +1,5 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, IconButton, DataTable, 
-                  DataRow, DataColumn, DataCell, icons, TextThemeStyle, VerticalDivider, ListView, colors,
+from flet import (Container, Row, Column, Container, Text, TextField, IconButton, DataTable, 
+                  DataRow, DataColumn, DataCell, Icons, TextThemeStyle, VerticalDivider, ListView, Colors,
                   MainAxisAlignment, CrossAxisAlignment, FilePickerResultEvent, Card, Divider)
 from Database import CustomerDatabase, SalesDatabase
 from ConfirmDialog import ConfirmDialog
@@ -8,21 +8,21 @@ from Reports import CustomerReport
 from Notification import Notification
 from Validator import Validator
 
-class Customers(UserControl):
+class Customers(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
 
-        self.btn_clear_filters = IconButton(icon=icons.CLEAR_ALL_OUTLINED, tooltip="Limpar Filtros", on_click=self.clear_filter_clicked)
-        self.tf_find_customer = TextField(label='Buscar...', expand=True, dense=True, prefix_icon=icons.SEARCH_ROUNDED, on_change=self.find_customers)
-        self.btn_print = IconButton(icon=icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", on_click=self.pdf_clicked)
-        self.btn_new_customer = IconButton(icon=icons.ADD_OUTLINED, tooltip="Novo Cliente", icon_color="primary", icon_size=36, on_click=self.new_customer_clicked)
+        self.btn_clear_filters = IconButton(icon=Icons.CLEAR_ALL_OUTLINED, tooltip="Limpar Filtros", on_click=self.clear_filter_clicked)
+        self.tf_find_customer = TextField(label='Buscar...', expand=True, dense=True, prefix_icon=Icons.SEARCH_ROUNDED, on_change=self.find_customers)
+        self.btn_print = IconButton(icon=Icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", on_click=self.pdf_clicked)
+        self.btn_new_customer = IconButton(icon=Icons.ADD_OUTLINED, tooltip="Novo Cliente", icon_color="primary", icon_size=36, on_click=self.new_customer_clicked)
         self.text_total = Text('R$0,00', style=TextThemeStyle.TITLE_MEDIUM)
 
         self.dt_customers = DataTable(                                            
             expand=True,
             divider_thickness=0.4,
-            #heading_row_color=colors.SURFACE_VARIANT,
+            #heading_row_color=Colors.SURFACE_VARIANT,
             sort_ascending=True,
             columns=[
                 DataColumn(Text('ID')), 
@@ -38,9 +38,9 @@ class Customers(UserControl):
                         DataCell(Text("John Player Special")),
                         DataCell(Text("308.602.798-39")),
                         DataCell(Text("18 99999 9999")),
-                        DataCell(Row([IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue'), 
-                                      IconButton(icon=icons.DELETE_OUTLINED, icon_color='red'), 
-                                      IconButton(icon=icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green'),
+                        DataCell(Row([IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue'), 
+                                      IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red'), 
+                                      IconButton(icon=Icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green'),
                         ])),
                     ],
                 ),
@@ -50,7 +50,7 @@ class Customers(UserControl):
         self.dt_order_history = DataTable(
             column_spacing=15,
             divider_thickness=0.4,
-            #heading_row_color=colors.ON_INVERSE_SURFACE,
+            #heading_row_color=Colors.ON_INVERSE_SURFACE,
             expand=True,
             columns=[
                 DataColumn(Text('Pedido')), 
@@ -65,7 +65,7 @@ class Customers(UserControl):
             elevation=1.5,
             animate_scale=200,
             #expand=True,
-            surface_tint_color=colors.INVERSE_PRIMARY,
+            surface_tint_color=Colors.INVERSE_PRIMARY,
             content=Container(
                 padding=10,
                 content=self.side_card_column,
@@ -172,7 +172,8 @@ class Customers(UserControl):
                 customers_content,
             ]
         )
-        return content
+        # Configurar o Container diretamente
+        self.content = customers_content
     
     def new_customer_clicked(self, e):
         self.route.page.go("/register_customer")
@@ -190,7 +191,6 @@ class Customers(UserControl):
     def load_customers(self):
         self.dt_customers.rows.clear()
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.select_customers()
         mydb.close()
 
@@ -202,9 +202,9 @@ class Customers(UserControl):
                         DataCell(Text(data[1])),
                         DataCell(Text(data[2])),
                         DataCell(Text(data[3])),
-                        DataCell(Row([IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', data=data[2], tooltip="Editar Cliente", on_click=self.edit_clicked),
-                                      IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=data[2], tooltip="Excluir Cliente", on_click=self.delete_clicked), 
-                                      IconButton(icon=icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green', tooltip="Nova Venda", data=data[2], on_click=self.new_sale_clicked),
+                        DataCell(Row([IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue', data=data[2], tooltip="Editar Cliente", on_click=self.edit_clicked),
+                                      IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=data[2], tooltip="Excluir Cliente", on_click=self.delete_clicked), 
+                                      IconButton(icon=Icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green', tooltip="Nova Venda", data=data[2], on_click=self.new_sale_clicked),
                         ])),
                     ],
                     on_select_changed=lambda e: self.table_row_clicked(e.control.cells[0].content.value, e.control.cells[2].content.value),
@@ -213,22 +213,33 @@ class Customers(UserControl):
         self.dt_customers.update()
 
     def delete_clicked(self, e):
-        dialog = ConfirmDialog(self.delete_customer, "Por favor, confirme:", "Tem certeza que deseja excluir o cliente?")
-        dialog.data = e.control.data
-        self.route.page.dialog = dialog
-        dialog.open = True
-        self.route.page.update()
+        print(f"🔍 Botão excluir clicado!")
+        cpf_cnpj = e.control.data
+        print(f"🔍 CPF/CNPJ do cliente a ser excluído: {cpf_cnpj}")
+        
+        # Criar e exibir diálogo de confirmação usando o padrão oficial do Flet
+        dialog = ConfirmDialog(
+            self.delete_customer, 
+            "Confirmar Exclusão", 
+            f"Tem certeza que deseja excluir o cliente com CPF/CNPJ '{cpf_cnpj}'?"
+        )
+        dialog.data = cpf_cnpj
+        print(f"🔍 Diálogo criado: {dialog}")
+        
+        # Usar page.open() em vez de dialog.open = True
+        self.route.page.open(dialog)
+        print(f"🔍 Diálogo aberto usando page.open()")
 
     def delete_customer(self, id):
+        print(f"🔍 Customers: Método delete_customer chamado com ID: {id}")
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.delete_customer(id)
         mydb.close()
 
         if result == 'success':
-            Notification(self.page, "Cliente excluído com sucesso!", "green").show_message()
+            Notification(self.route.page, "Cliente excluído com sucesso!", "green").show_message()
         else:
-            Notification(self.page, f"Erro ao excluir o cliente: {result}", "red").show_message()
+            Notification(self.route.page, f"Erro ao excluir o cliente: {result}", "red").show_message()
         self.load_customers()
         self.route.page.update()
 
@@ -250,7 +261,6 @@ class Customers(UserControl):
         
         self.dt_customers.rows.clear()
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.find_customer(self.tf_find_customer.value)
         mydb.close()
         
@@ -262,9 +272,9 @@ class Customers(UserControl):
                         DataCell(Text(data[1])),
                         DataCell(Text(data[2])),
                         DataCell(Text(data[3])),
-                        DataCell(Row([IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', data=data[2], tooltip="Editar cliente", on_click=self.edit_clicked),
-                                      IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=data[2], tooltip="Excluir cliente", on_click=self.delete_clicked), 
-                                      IconButton(icon=icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green', data=data[2], tooltip="Nova venda", on_click=self.new_sale_clicked),
+                        DataCell(Row([IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue', data=data[2], tooltip="Editar cliente", on_click=self.edit_clicked),
+                                      IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=data[2], tooltip="Excluir cliente", on_click=self.delete_clicked), 
+                                      IconButton(icon=Icons.ADD_SHOPPING_CART_OUTLINED, icon_color='green', data=data[2], tooltip="Nova venda", on_click=self.new_sale_clicked),
                         ])),
                     ],
                     on_select_changed=lambda e: self.table_row_clicked(e.control.cells[0].content.value, e.control.cells[2].content.value),
@@ -306,7 +316,6 @@ class Customers(UserControl):
 
     def new_sale_clicked(self, e):
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.select_one_customer(e.control.data)
         mydb.close()
         data = list(result[0])
@@ -322,14 +331,12 @@ class Customers(UserControl):
 
     def table_row_clicked(self, id_customer, cpf_cnpj):
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.select_one_customer(cpf_cnpj)
         adresses = mydb.select_adresses(cpf_cnpj)
         mydb.close()
         self.fill_in_side_card(result[0], adresses)
         
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.select_sales_history(id_customer)
         mydb.close()
         total = sum(map(lambda x: x[2], result))
@@ -346,7 +353,7 @@ class Customers(UserControl):
                         DataCell(Text(data[0])),
                         DataCell(Text(data[1])),
                         DataCell(Text(f"R${Validator.format_to_currency(data[2])}")),
-                        DataCell(IconButton(icon=icons.VISIBILITY_OUTLINED, icon_color="blue", data=data[0], tooltip="Visualizar pedido", on_click=self.see_sale_clicked))
+                        DataCell(IconButton(icon=Icons.VISIBILITY_OUTLINED, icon_color="blue", data=data[0], tooltip="Visualizar pedido", on_click=self.see_sale_clicked))
                     ]
                 )
             )

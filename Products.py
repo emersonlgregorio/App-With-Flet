@@ -1,27 +1,27 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, IconButton, DataTable, 
-                  DataRow, DataColumn, DataCell, icons, TextThemeStyle, TextAlign, VerticalDivider, ListView,
-                  colors, CrossAxisAlignment, MainAxisAlignment, FilePickerResultEvent, Card, Divider)
+from flet import (Container, Row, Column, Container, Text, TextField, IconButton, DataTable, 
+                  DataRow, DataColumn, DataCell, Icons, TextThemeStyle, TextAlign, VerticalDivider, ListView,
+                  Colors, CrossAxisAlignment, MainAxisAlignment, FilePickerResultEvent, Card, Divider)
 from Database import ProductsDatabase, SalesDatabase
 from ConfirmDialog import ConfirmDialog
 from Reports import ProductsReport
 from Notification import Notification
 from Validator import Validator
 
-class Products(UserControl):
+class Products(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
 
-        self.tf_find_product = TextField(label='Buscar...', expand=True, dense=True, prefix_icon=icons.SEARCH_ROUNDED, on_change=self.find_products)
-        self.btn_see_low_stock = IconButton(icon=icons.INVENTORY_OUTLINED, tooltip="Ver produtos com estoque baixo", on_click=self.see_low_stock_clicked)
-        self.btn_clear_filters = IconButton(icon=icons.CLEAR_ALL_OUTLINED, tooltip="Limpar Filtros", on_click=self.clear_filter_clicked)
-        self.btn_print = IconButton(icon=icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", on_click=self.pdf_clicked)
-        self.btn_new_product = IconButton(tooltip='Adicionar Produto', icon=icons.ADD_OUTLINED, icon_color=colors.PRIMARY, icon_size=36, on_click=self.new_product_clicked)
+        self.tf_find_product = TextField(label='Buscar...', expand=True, dense=True, prefix_icon=Icons.SEARCH_ROUNDED, on_change=self.find_products)
+        self.btn_see_low_stock = IconButton(icon=Icons.INVENTORY_OUTLINED, tooltip="Ver produtos com estoque baixo", on_click=self.see_low_stock_clicked)
+        self.btn_clear_filters = IconButton(icon=Icons.CLEAR_ALL_OUTLINED, tooltip="Limpar Filtros", on_click=self.clear_filter_clicked)
+        self.btn_print = IconButton(icon=Icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", on_click=self.pdf_clicked)
+        self.btn_new_product = IconButton(tooltip='Adicionar Produto', icon=Icons.ADD_OUTLINED, icon_color=Colors.PRIMARY, icon_size=36, on_click=self.new_product_clicked)
 
         self.dt_products = DataTable(                                            
             expand=True,
             divider_thickness=0.4,
-            #heading_row_color=colors.ON_INVERSE_SURFACE,
+            #heading_row_color=Colors.ON_INVERSE_SURFACE,
             columns=[
                 DataColumn(Text('ID')), 
                 DataColumn(Text('DESCRIÇÃO')), 
@@ -34,7 +34,7 @@ class Products(UserControl):
         self.dt_order_history = DataTable(
             column_spacing=15,
             divider_thickness=0.4,
-            #heading_row_color=colors.ON_INVERSE_SURFACE,
+            #heading_row_color=Colors.ON_INVERSE_SURFACE,
             expand=True,
             columns=[
                 DataColumn(Text('Pedido')), 
@@ -50,7 +50,7 @@ class Products(UserControl):
             elevation=1.5,
             animate_scale=200,
             #expand=True,
-            surface_tint_color=colors.INVERSE_PRIMARY,
+            surface_tint_color=Colors.INVERSE_PRIMARY,
             content=Container(
                 padding=10,
                 content=self.side_card_column,
@@ -157,8 +157,9 @@ class Products(UserControl):
                 page_content,
             ]
         )
-        return content
-    
+        # Configurar o Container diretamente
+
+        self.content = content
     def initialize(self):
         print("Initializing Products Page")
         self.tf_find_product.value = ""
@@ -171,6 +172,9 @@ class Products(UserControl):
         self.fill_in_table_products()
 
     def new_product_clicked(self, e):
+        # Marcar que é um novo produto (não edição)
+        self.route.register_product.is_new_product = True
+        
         self.route.page.go("/register_product")
         self.route.bar.set_title('Cadastrar Novo Produto')
         self.route.page.update()
@@ -178,7 +182,6 @@ class Products(UserControl):
     def fill_in_table_products(self, data=None):
         if data is None:
             mydb = ProductsDatabase(self.route)
-            mydb.connect()
             result = mydb.select_products()
             mydb.close()
         else:
@@ -195,8 +198,8 @@ class Products(UserControl):
                         DataCell(Text(data[3])),
                         DataCell(TextField(expand=True, value=f"R${data[4]}", border='none', read_only=True, text_align=TextAlign.END)),
                         DataCell(Row(controls=[
-                            IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', data=data[0], on_click=self.edit_clicked),           
-                            IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=data[0], on_click=self.delete_clicked), 
+                            IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue', data=data[0], on_click=self.edit_clicked),           
+                            IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=data[0], on_click=self.delete_clicked), 
                         ])),
                     ],
                     on_select_changed = lambda e: self.table_row_clicked(e.control.cells[0].content.value),
@@ -205,25 +208,38 @@ class Products(UserControl):
         self.dt_products.update()
 
     def edit_clicked(self, e):
+        print(f"🔍 edit_clicked chamado com e.control.data: {e.control.data} (tipo: {type(e.control.data)})")
+        print(f"🔍 e.control: {e.control}")
+        print(f"🔍 e.control.data: {e.control.data}")
+        
         self.route.bar.set_title('Editar Produto')
+        print(f"🔍 Navegando para /register_product")
         self.route.page.go("/register_product")
         self.route.page.update()
+        print(f"🔍 Navegação concluída")
 
         self.route.register_product.text_label.value = "Editar Produto:"
-        self.route.register_product.load_product(e.control.data)
+        print(f"🔍 Chamando load_product com ID: {e.control.data}")
+        
+        # Verificar se o objeto register_product existe
+        if hasattr(self.route, 'register_product'):
+            print(f"🔍 self.route.register_product existe: {self.route.register_product}")
+            self.route.register_product.load_product(e.control.data)
+            print(f"🔍 load_product concluído")
+        else:
+            print(f"❌ ERRO: self.route.register_product não existe!")
 
+        print(f"🔍 Chamando get_sold_from_db")
         self.route.register_product.get_sold_from_db()
+        print(f"🔍 get_sold_from_db concluído")
 
     def delete_clicked(self, e):
         question = ConfirmDialog(self.delete_product, "Por favor, confirme:", "Tem certeza que deseja excluir o produto?")
         question.data = e.control.data
-        self.route.page.dialog = question
-        question.open = True
-        self.route.page.update()
+        self.route.page.open(question)
 
     def delete_product(self, id):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.delete_products(id)
         mydb.close()
 
@@ -239,7 +255,6 @@ class Products(UserControl):
             return
         
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.find_product(self.tf_find_product.value)
         mydb.close()
         
@@ -254,8 +269,8 @@ class Products(UserControl):
                         DataCell(Text(data[3])),
                         DataCell(TextField(expand=True, value=f"R${data[4]}", border='none', read_only=True, text_align=TextAlign.END)),
                         DataCell(Row(spacing=0, controls=[
-                            IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', data=data[0], on_click=self.edit_clicked),           
-                            IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=data[0], on_click=self.delete_clicked), 
+                            IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue', data=data[0], on_click=self.edit_clicked),           
+                            IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=data[0], on_click=self.delete_clicked), 
                         ])),
                     ],
                     on_select_changed = lambda e: self.table_row_clicked(e.control.cells[0].content.value),
@@ -296,13 +311,11 @@ class Products(UserControl):
 
     def table_row_clicked(self, id_product):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.select_products_full(id_product)
         mydb.close()
         self.fill_in_side_card(result)
         
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.select_sold_history(id_product)
         mydb.close()
 
@@ -320,7 +333,7 @@ class Products(UserControl):
                         DataCell(Text(data[0])),
                         DataCell(Text(data[1])),
                         DataCell(Text(value=f"R${Validator.format_to_currency(data[2])}")),
-                        DataCell(IconButton(icon=icons.VISIBILITY_OUTLINED, icon_color="blue", tooltip="Ver pedido", data=data[0], on_click=self.see_sale_clicked)),
+                        DataCell(IconButton(icon=Icons.VISIBILITY_OUTLINED, icon_color="blue", tooltip="Ver pedido", data=data[0], on_click=self.see_sale_clicked)),
                     ]
                 )
             )
@@ -337,7 +350,6 @@ class Products(UserControl):
 
     def get_low_stock(self):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.select_low_stock()
         mydb.close()
         return result

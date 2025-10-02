@@ -1,16 +1,16 @@
-from flet import (UserControl, Container, IconButton, icons, NavigationRail, NavigationRailLabelType,
+from flet import (Container, Container, IconButton, Icons, NavigationRail, NavigationRailLabelType,
                   NavigationRailDestination, Icon, padding, border_radius)
 
 from SetGeneralConfig import SetGeneralConfig
 
-class SideMenu(UserControl):
+class SideMenu(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
         
         self.cont = Container(            
             padding=padding.all(5),
-            #bgcolor=colors.ON_INVERSE_SURFACE,                       
+            #bgcolor=Colors.ON_INVERSE_SURFACE,                       
             border_radius=border_radius.all(5),
             visible=False,
         )        
@@ -20,35 +20,35 @@ class SideMenu(UserControl):
             min_width=56,                
             min_extended_width=160, 
             bgcolor='transparent',
-            leading=IconButton(icon=icons.SWAP_HORIZ_ROUNDED, icon_size=40, tooltip="Mostrar/Ocultar Opções", on_click=self.menu_clicked),
+            leading=IconButton(icon=Icons.SWAP_HORIZ_ROUNDED, icon_size=40, tooltip="Mostrar/Ocultar Opções", on_click=self.menu_clicked),
             group_alignment=-0.95,
             destinations=[
                 NavigationRailDestination(
-                    icon=icons.COTTAGE_OUTLINED, selected_icon=icons.COTTAGE, label='Home',
+                    icon=Icons.COTTAGE_OUTLINED, selected_icon=Icons.COTTAGE, label='Home',
                 ),
                 NavigationRailDestination(
-                    icon_content=Icon(icons.PERM_CONTACT_CALENDAR_OUTLINED), selected_icon_content=Icon(icons.PERM_CONTACT_CALENDAR), label='Clientes'
+                    icon=Icons.PERM_CONTACT_CALENDAR_OUTLINED, selected_icon=Icons.PERM_CONTACT_CALENDAR, label='Clientes'
                 ),
                 NavigationRailDestination(
-                    icon_content=Icon(icons.PERSON_OUTLINED), selected_icon_content=Icon(icons.PERSON_ROUNDED), label='Usuários'
+                    icon=Icons.PERSON_OUTLINED, selected_icon=Icons.PERSON_ROUNDED, label='Usuários'
                 ),
                 NavigationRailDestination(
-                    icon_content=Icon(icons.INVENTORY_2_OUTLINED), selected_icon_content=Icon(icons.INVENTORY), label='Produtos'
+                    icon=Icons.INVENTORY_2_OUTLINED, selected_icon=Icons.INVENTORY, label='Produtos'
                 ),
                 NavigationRailDestination(
-                    icon_content=Icon(icons.SHOPPING_CART_OUTLINED), selected_icon_content=Icon(icons.SHOPPING_CART), label='Vendas'
+                    icon=Icons.SHOPPING_CART_OUTLINED, selected_icon=Icons.SHOPPING_CART, label='Vendas'
                 ),
                 # NavigationRailDestination(
-                #     icon=icons.SETTINGS_OUTLINED, selected_icon_content=Icon(icons.SETTINGS), label='Configurações',
+                #     icon=Icons.SETTINGS_OUTLINED, selected_icon_content=Icon(Icons.SETTINGS), label='Configurações',
                 # ),
             ],
-            trailing=IconButton(icon=icons.SETTINGS, on_click=self.show_config_page),
+            trailing=IconButton(icon=Icons.SETTINGS, on_click=self.show_config_page),
             on_change=self.nav_clicked,
         )  
-        self.cont.content=self.nnrail
-
-    def build(self):     
-        return self.cont
+        self.cont.content = self.nnrail
+        
+        # Configurar o Container diretamente
+        self.content = self.cont
 
     def menu_clicked(self, e):
         self.nnrail.extended = not self.nnrail.extended        

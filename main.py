@@ -1,4 +1,4 @@
-from flet import Page, app, Theme, ThemeMode, colors
+from flet import Page, app, Theme, ThemeMode, Colors
 
 from InfostoreApp import InfostoreApp
 
@@ -8,7 +8,7 @@ def main(page: Page):
     page.window_min_width = 1360
 
     page.theme_mode=ThemeMode.LIGHT
-    page.theme = Theme(color_scheme_seed=colors.BLUE_300)
+    page.theme = Theme(color_scheme_seed=Colors.BLUE_300)
 
     infostore_app = InfostoreApp(page)
     page.on_route_change = infostore_app.route_change    

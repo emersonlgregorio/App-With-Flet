@@ -16,8 +16,8 @@ class CustomerReport:
         self.rowNumb = self.get_rowNumb()
 
         style = TableStyle([
-            ('BACKGROUND', (0,0), (3,0), colors.lightgrey),
-            ('TEXTCOLOR',(0,0),(-1,0), colors.black),
+            ('BACKGROUND', (0,0), (3,0), Colors.lightgrey),
+            ('TEXTCOLOR',(0,0),(-1,0), Colors.black),
 
             ('ALIGN',(0,0),(-1,-1),'CENTER'),
 
@@ -26,7 +26,7 @@ class CustomerReport:
 
             ('BOTTOMPADDING', (0,0), (-1,0), 4),
 
-            ('BACKGROUND',(0,1),(-1,-1), colors.white),
+            ('BACKGROUND',(0,1),(-1,-1), Colors.white),
         ])
         
         self.table.setStyle(style)
@@ -54,8 +54,8 @@ class ProductsReport:
         self.title = title
         self.paragraph_style = ParagraphStyle(name='Centered', alignment=TA_CENTER, fontSize=14, leading=16)
         self.table_style = TableStyle([
-            ('BACKGROUND', (0,0), (4,0), colors.lightgrey),
-            ('TEXTCOLOR',(0,0),(-1,0), colors.black),
+            ('BACKGROUND', (0,0), (4,0), Colors.lightgrey),
+            ('TEXTCOLOR',(0,0),(-1,0), Colors.black),
 
             ('ALIGN',(0,0),(-1,-1),'CENTER'),
 
@@ -64,7 +64,7 @@ class ProductsReport:
 
             ('BOTTOMPADDING', (0,0), (-1,0), 4),
 
-            ('BACKGROUND',(0,1),(-1,-1), colors.white),
+            ('BACKGROUND',(0,1),(-1,-1), Colors.white),
         ])
 
     def get_date_time(self):
@@ -124,7 +124,7 @@ class SaleReport:
 
     def get_header_data(self):
         # Cabeçalho com o logo e os dados da empresa
-        logo = Image("C:\logo.png", 50, 50)
+        logo = Image(r"C:\logo.png", 50, 50)
 
         header_table = Table([
             [logo, "", self.header_data[0]], 
@@ -154,7 +154,7 @@ class SaleReport:
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, -1), 13),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black)
+            ('TEXTCOLOR', (0, 0), (-1, -1), Colors.black)
         ]))
         return sale_table
 
@@ -190,12 +190,12 @@ class SaleReport:
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, -1), Colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), Colors.lightgrey),
         ])
         if products_data[-1][4] == "Total:":
             style.add('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold')
-            style.add('BACKGROUND', (0, -1), (-1, -1), colors.lightgrey)
+            style.add('BACKGROUND', (0, -1), (-1, -1), Colors.lightgrey)
 
         table.setStyle(style)
         return table
@@ -215,8 +215,8 @@ class SaleReport:
             num_items = len(self.products_data)
             self.numb_pages = num_items // max_items_per_page + (num_items % max_items_per_page > 0)
 
-            line = HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black)
-            dotted_line = HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, dash=(2, 2))
+            line = HRFlowable(width="100%", thickness=1, lineCap='round', color=Colors.black)
+            dotted_line = HRFlowable(width="100%", thickness=1, lineCap='round', color=Colors.black, dash=(2, 2))
 
             for page in range(self.numb_pages):
                 story.extend(

@@ -1,5 +1,5 @@
 from flet import (Row, MainAxisAlignment, TextField, TextButton, Column, Text, DataColumn, DataTable,
-                  DataCell, ListView, AlertDialog, DataRow, IconButton, colors, icons)
+                  DataCell, ListView, AlertDialog, DataRow, IconButton, Colors, Icons)
 from Database import ProductsDatabase
 
 class SelectProduct(AlertDialog):
@@ -43,12 +43,10 @@ class SelectProduct(AlertDialog):
         return self
 
     def back_clicked(self, e):
-        self.open = False
-        self.route.page.update()
+        e.page.close(self)
 
     def get_data_from_db(self):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.select_products()
         mydb.close()
         return result
@@ -63,7 +61,7 @@ class SelectProduct(AlertDialog):
                         DataCell(Text(value=data[1])),
                         DataCell(Text(value=data[3])),
                         DataCell(Text(value=f"R${data[4]}")),
-                        DataCell(IconButton(icon=icons.SENSOR_OCCUPIED_ROUNDED, icon_color=colors.PRIMARY, tooltip="Selecionar", data=data[0], on_click=self.select_product)),
+                        DataCell(IconButton(icon=Icons.SENSOR_OCCUPIED_ROUNDED, icon_color=Colors.PRIMARY, tooltip="Selecionar", data=data[0], on_click=self.select_product)),
                     ]
                 )
             )
@@ -78,7 +76,6 @@ class SelectProduct(AlertDialog):
             return
         
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.find_product(self.tf_find_product.value)
         mydb.close()
 
@@ -91,14 +88,12 @@ class SelectProduct(AlertDialog):
 
     def select_product(self, e):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = mydb.find_product_by_code(int(e.control.data))
         mydb.close()
         
         if result:
             self.route.register_sales.load_card(result)
-            self.open = False
-            self.update()
+            e.page.close(self)
         else:
             self.route.register_sales.clear_card()
         

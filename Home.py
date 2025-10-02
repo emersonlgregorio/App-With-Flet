@@ -1,6 +1,6 @@
 
-from flet import (UserControl, Row, Column, Container, Text, border, colors, margin, ChartAxisLabel, Card, alignment, 
-                  border_radius, LineChartDataPoint, LineChartData, Border, ChartGridLines, icons, 
+from flet import (Container, Row, Column, Container, Text, border, Colors, margin, ChartAxisLabel, Card, alignment, 
+                  border_radius, LineChartDataPoint, LineChartData, Border, ChartGridLines, Icons, 
                   ChartAxis, LineChart, BorderSide, TextThemeStyle, BarChartGroup, BarChart, BarChartRod, Icon,
                   TextSpan, PieChart, PieChartSection, TextStyle, FontWeight, PieChartEvent,
                   BoxShadow, LineChartEvent, Offset, ShadowBlurStyle, BarChartEvent, OutlinedButton)
@@ -9,11 +9,11 @@ from datetime import date, timedelta
 from Database import DashboardDatabase
 from Validator import Validator
 
-class Home(UserControl):
+class Home(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
-        self.COLOR = [colors.PRIMARY, colors.SECONDARY, colors.ON_PRIMARY_CONTAINER, colors.TERTIARY, colors.ON_SURFACE_VARIANT]
+        self.COLOR = [Colors.PRIMARY, Colors.SECONDARY, Colors.ON_PRIMARY_CONTAINER, Colors.TERTIARY, Colors.ON_SURFACE_VARIANT]
 
         ###### LineChart: ######
         self.linechart_data = [
@@ -25,7 +25,7 @@ class Home(UserControl):
                     LineChartDataPoint(9, 29),
                 ],
                 stroke_width=4,
-                color=colors.PRIMARY,
+                color=Colors.PRIMARY,
                 curved=True,
                 stroke_cap_round=True,
                 point=True,
@@ -38,9 +38,9 @@ class Home(UserControl):
             min_x=0,
             max_x=9,
             animate=200,
-            horizontal_grid_lines=ChartGridLines( width=0.5, dash_pattern=[5, 5], color=colors.with_opacity(0.4, colors.ON_SURFACE)),
+            horizontal_grid_lines=ChartGridLines( width=0.5, dash_pattern=[5, 5], color=Colors.with_opacity(0.4, Colors.ON_SURFACE)),
             border=Border(
-                bottom=BorderSide(2, colors.with_opacity(0.5, colors.ON_SURFACE))
+                bottom=BorderSide(2, Colors.with_opacity(0.5, Colors.ON_SURFACE))
             ),
             top_axis=ChartAxis(
                 title=Text("Evolução das Vendas (R$)",style=TextThemeStyle.TITLE_MEDIUM),
@@ -63,7 +63,7 @@ class Home(UserControl):
                             Text(
                                 "SET",
                                 size=14,
-                                color=colors.ON_SURFACE,
+                                color=Colors.ON_SURFACE,
                             ),
                             margin=margin.only(top=10),
                         ),
@@ -74,7 +74,7 @@ class Home(UserControl):
                             Text(
                                 "OUT",
                                 size=14,
-                                color=colors.ON_SURFACE,
+                                color=Colors.ON_SURFACE,
                             ),
                             margin=margin.only(top=10),
                         ),
@@ -85,7 +85,7 @@ class Home(UserControl):
                             Text(
                                 "NOV",
                                 size=14,
-                                color=colors.ON_SURFACE,
+                                color=Colors.ON_SURFACE,
                             ),
                             margin=margin.only(top=10),
                         ),
@@ -96,7 +96,7 @@ class Home(UserControl):
                             Text(
                                 "DEC",
                                 size=14,
-                                color=colors.ON_SURFACE,
+                                color=Colors.ON_SURFACE,
                             ),
                             margin=margin.only(top=10),
                         ),
@@ -104,7 +104,7 @@ class Home(UserControl):
                 ],
                 labels_size=32,
             ),
-            tooltip_bgcolor=colors.with_opacity(1, colors.ON_PRIMARY),
+            tooltip_bgcolor=Colors.with_opacity(1, Colors.ON_PRIMARY),
             on_chart_event=self.on_line_chart_event,
         )
 
@@ -121,7 +121,7 @@ class Home(UserControl):
                             from_y=0,
                             to_y=0,
                             width=40,
-                            color=colors.PRIMARY,
+                            color=Colors.PRIMARY,
                             tooltip="",
                             border_radius=border_radius.vertical(top=5, bottom=0),
                         ),
@@ -134,7 +134,7 @@ class Home(UserControl):
                             from_y=0,
                             to_y=0,
                             width=40,
-                            color=colors.SECONDARY,
+                            color=Colors.SECONDARY,
                             tooltip="",
                             border_radius=border_radius.vertical(top=5, bottom=0),
                         ),
@@ -147,7 +147,7 @@ class Home(UserControl):
                             from_y=0,
                             to_y=0,
                             width=40,
-                            color=colors.ON_PRIMARY_CONTAINER,
+                            color=Colors.ON_PRIMARY_CONTAINER,
                             tooltip="",
                             border_radius=border_radius.vertical(top=5, bottom=0),
                         ),
@@ -160,7 +160,7 @@ class Home(UserControl):
                             from_y=0,
                             to_y=0,
                             width=40,
-                            color=colors.TERTIARY,
+                            color=Colors.TERTIARY,
                             tooltip="",
                             border_radius=border_radius.vertical(top=5, bottom=0),
                         ),
@@ -173,7 +173,7 @@ class Home(UserControl):
                             from_y=0,
                             to_y=0,
                             width=40,
-                            color=colors.INVERSE_PRIMARY,
+                            color=Colors.INVERSE_PRIMARY,
                             tooltip="",
                             border_radius=border_radius.vertical(top=5, bottom=0),
                         ),
@@ -181,7 +181,7 @@ class Home(UserControl):
                 ),
             ],
             border=border.only(
-                bottom=BorderSide(2, colors.with_opacity(0.5, colors.ON_SURFACE)),
+                bottom=BorderSide(2, Colors.with_opacity(0.5, Colors.ON_SURFACE)),
             ),
             left_axis=ChartAxis(
                 labels_size=40, title_size=40
@@ -217,9 +217,9 @@ class Home(UserControl):
                 labels_size=40,
             ),
             horizontal_grid_lines=ChartGridLines(
-                color=colors.with_opacity(0.4, colors.ON_SURFACE), width=1, dash_pattern=[5, 5]
+                color=Colors.with_opacity(0.4, Colors.ON_SURFACE), width=1, dash_pattern=[5, 5]
             ),
-            tooltip_bgcolor=colors.with_opacity(1, colors.SURFACE),
+            tooltip_bgcolor=Colors.with_opacity(1, Colors.SURFACE),
             on_chart_event=self.on_bar_char_event,
         )
 
@@ -234,25 +234,25 @@ class Home(UserControl):
             sections=[
                 PieChartSection(
                     value=40,
-                    title_style=TextStyle(size=16, color=colors.WHITE),
-                    color=colors.with_opacity(0.8, colors.PRIMARY),
+                    title_style=TextStyle(size=16, color=Colors.WHITE),
+                    color=Colors.with_opacity(0.8, Colors.PRIMARY),
                     radius=42,
-                    border_side=border.BorderSide(0, color=colors.ON_PRIMARY_CONTAINER),
+                    border_side=border.BorderSide(0, color=Colors.ON_PRIMARY_CONTAINER),
                     badge=Container(
                             alignment= alignment.center,
                             width=40,
                             height=40,
-                            border=border.all(1, colors.PRIMARY),
+                            border=border.all(1, Colors.PRIMARY),
                             border_radius=20,
-                            bgcolor=colors.with_opacity(0.7, colors.SURFACE),
+                            bgcolor=Colors.with_opacity(0.7, Colors.SURFACE),
                             content=Text("40%", weight=FontWeight.BOLD),
                         ),
                     badge_position=1,
                 ),
                 PieChartSection(
                     value=60,
-                    title_style=TextStyle(size=16, color=colors.WHITE, weight=FontWeight.BOLD),
-                    color=colors.with_opacity(0.5,colors.SECONDARY_CONTAINER),
+                    title_style=TextStyle(size=16, color=Colors.WHITE, weight=FontWeight.BOLD),
+                    color=Colors.with_opacity(0.5,Colors.SECONDARY_CONTAINER),
                     #radius=30,
                 ),
             ]
@@ -261,7 +261,7 @@ class Home(UserControl):
         ###### Cards: ######
         self.line_chart_card = Card(
             expand=5,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10.0,
             content=Container(
                 padding=25,
@@ -272,7 +272,7 @@ class Home(UserControl):
 
         self.gauge_card = Card(
             expand=3,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10.0,
             content=Container(
                 padding=20,
@@ -291,7 +291,7 @@ class Home(UserControl):
 
         self.bar_chart_card = Card(
             expand=5,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10.0,
             content=Container(
                 padding=20,
@@ -300,13 +300,13 @@ class Home(UserControl):
             )
         )
 
-        self.text_registered_customers = Text(value="25", style=TextThemeStyle.DISPLAY_LARGE, color=colors.PRIMARY, weight=FontWeight.BOLD)
-        self.text_variation_customers = Text("5%", color=colors.GREEN, size=22)
-        self.btn_add_customer = OutlinedButton(text="Ad. Cliente", icon=icons.ADD_OUTLINED, on_click=self.add_customer_clicked)
-        self.icon = Icon(name=icons.ARROW_DROP_UP, color='green')
+        self.text_registered_customers = Text(value="25", style=TextThemeStyle.DISPLAY_LARGE, color=Colors.PRIMARY, weight=FontWeight.BOLD)
+        self.text_variation_customers = Text("5%", color=Colors.GREEN, size=22)
+        self.btn_add_customer = OutlinedButton(text="Ad. Cliente", icon=Icons.ADD_OUTLINED, on_click=self.add_customer_clicked)
+        self.icon = Icon(name=Icons.ARROW_DROP_UP, color='green')
         self.customer_card = Card(
             expand=True,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10,
             content=Container(
                 padding=20,
@@ -322,7 +322,7 @@ class Home(UserControl):
                             horizontal_alignment='center',
                             spacing=0,
                             controls=[
-                                Row(alignment='center', controls=[Icon(name=icons.PERM_CONTACT_CALENDAR_OUTLINED, color='primary', size=24), Text(value="Clientes Cadastrados", size=16)]),
+                                Row(alignment='center', controls=[Icon(name=Icons.PERM_CONTACT_CALENDAR_OUTLINED, color='primary', size=24), Text(value="Clientes Cadastrados", size=16)]),
                                 self.text_registered_customers,
                             ]
                         ),
@@ -341,12 +341,12 @@ class Home(UserControl):
             )
         )
 
-        self.text_today_sales = Text(value="10", style=TextThemeStyle.DISPLAY_LARGE, color=colors.PRIMARY, weight=FontWeight.BOLD)
-        self.text_today_billing = Text(value="R$0,00", color=colors.GREEN, size=22)
-        self.btn_add_sale = OutlinedButton(text="Nova Venda", icon=icons.ADD_OUTLINED, on_click=self.add_sale_clicked)
+        self.text_today_sales = Text(value="10", style=TextThemeStyle.DISPLAY_LARGE, color=Colors.PRIMARY, weight=FontWeight.BOLD)
+        self.text_today_billing = Text(value="R$0,00", color=Colors.GREEN, size=22)
+        self.btn_add_sale = OutlinedButton(text="Nova Venda", icon=Icons.ADD_OUTLINED, on_click=self.add_sale_clicked)
         self.sales_card = Card(
             expand=True,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10,
             content=Container(
                 padding=20,
@@ -362,7 +362,7 @@ class Home(UserControl):
                             horizontal_alignment='center',
                             spacing=0,
                             controls=[
-                                Row(alignment='center', controls=[Icon(name=icons.SHOPPING_CART_OUTLINED, color='primary', size=24), Text(value="Pedidos Hoje", size=16)]),
+                                Row(alignment='center', controls=[Icon(name=Icons.SHOPPING_CART_OUTLINED, color='primary', size=24), Text(value="Pedidos Hoje", size=16)]),
                                 self.text_today_sales,
                             ]
                         ),
@@ -387,12 +387,12 @@ class Home(UserControl):
             )
         )
 
-        self.text_numb_of_products = Text(value="105", style=TextThemeStyle.DISPLAY_LARGE, color=colors.PRIMARY, weight=FontWeight.BOLD)
-        self.text_low_stock = Text(color=colors.GREEN, size=22, spans=[TextSpan(text="", style=TextStyle(size=16, color="green"), on_click=self.see_low_stock_clicked)])
-        self.btn_add_product = OutlinedButton(text="Ad. Produto", icon=icons.ADD_OUTLINED, on_click=self.add_product_clicked)
+        self.text_numb_of_products = Text(value="105", style=TextThemeStyle.DISPLAY_LARGE, color=Colors.PRIMARY, weight=FontWeight.BOLD)
+        self.text_low_stock = Text(color=Colors.GREEN, size=22, spans=[TextSpan(text="", style=TextStyle(size=16, color="green"), on_click=self.see_low_stock_clicked)])
+        self.btn_add_product = OutlinedButton(text="Ad. Produto", icon=Icons.ADD_OUTLINED, on_click=self.add_product_clicked)
         self.products_card = Card(
             expand=True,
-            surface_tint_color=colors.SURFACE_VARIANT,
+            surface_tint_color=Colors.SURFACE,
             elevation=10,
             content=Container(
                 padding=20,
@@ -408,7 +408,7 @@ class Home(UserControl):
                             horizontal_alignment='center',
                             spacing=0,
                             controls=[
-                                Row(alignment='center', controls=[Icon(name=icons.INVENTORY_2_OUTLINED, color='primary', size=24), Text(value="Produtos Cadastrados", size=16)]),
+                                Row(alignment='center', controls=[Icon(name=Icons.INVENTORY_2_OUTLINED, color='primary', size=24), Text(value="Produtos Cadastrados", size=16)]),
                                 self.text_numb_of_products,
                             ]
                         ),
@@ -470,7 +470,8 @@ class Home(UserControl):
                 self.home_content,             
             ]
         )
-        return self.content    
+        # Configurar o Container diretamente
+        self.content = self.home_content
 
     def initialize(self):
         print("Initializing Home Page")
@@ -497,24 +498,24 @@ class Home(UserControl):
 
     def on_pie_chart_event(self, e: PieChartEvent):
         if e.type == "PointerHoverEvent":
-            self.pie_stock.sections[0].color = colors.PRIMARY
+            self.pie_stock.sections[0].color = Colors.PRIMARY
             self.pie_stock.sections[0].radius = 40
         else:
-            self.pie_stock.sections[0].color = colors.with_opacity(0.8, colors.PRIMARY)
+            self.pie_stock.sections[0].color = Colors.with_opacity(0.8, Colors.PRIMARY)
             self.pie_stock.sections[0].radius = 42
 
         self.pie_stock.update()
 
     def on_line_chart_event(self, e: LineChartEvent):
         for serie in self.line_chart.data_series:
-            serie.shadow = BoxShadow(spread_radius=8, blur_radius=5, color=colors.PRIMARY, offset=Offset(1, 1), blur_style=ShadowBlurStyle.NORMAL) if e.type == "PointerHoverEvent" else None
+            serie.shadow = BoxShadow(spread_radius=8, blur_radius=5, color=Colors.PRIMARY, offset=Offset(1, 1), blur_style=ShadowBlurStyle.NORMAL) if e.type == "PointerHoverEvent" else None
         self.line_chart.update()
 
     def on_bar_char_event(self, e: BarChartEvent):
         for group_index, group in enumerate(self.bar_chart.bar_groups):
             for rod in group.bar_rods:
                 # rod.border_radius = border_radius.vertical(top=20, bottom=0) if e.group_index == group_index and e.type == "PointerHoverEvent" else border_radius.vertical(top=6, bottom=0)
-                rod.color = colors.with_opacity(0.5, self.COLOR[group_index]) if e.group_index == group_index and e.type == "PointerHoverEvent" else colors.with_opacity(1, self.COLOR[group_index])
+                rod.color = Colors.with_opacity(0.5, self.COLOR[group_index]) if e.group_index == group_index and e.type == "PointerHoverEvent" else Colors.with_opacity(1, self.COLOR[group_index])
                 if e.type == "PointerHoverEvent":
                     rod.width = 42
                 else:
@@ -537,7 +538,7 @@ class Home(UserControl):
                     LineChartDataPoint(9, data[3]),
                 ],
                 stroke_width=4,
-                color=colors.PRIMARY,
+                color=Colors.PRIMARY,
                 curved=True,
                 stroke_cap_round=True,
                 point=True,
@@ -591,14 +592,12 @@ class Home(UserControl):
 
     def get_percent_stock(self):
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         result = mydb.select_percent_stock()
         mydb.close()
         return result
 
     def get_most_profitable_products(self):
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         result = mydb.select_most_profitable()
         mydb.close
         
@@ -651,14 +650,12 @@ class Home(UserControl):
     def get_data_from_sales(self):
         dates, months = self.get_first_last_day_of_months(4)
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         result = mydb.select_sales_by_months(dates)
         mydb.close()
         return result, months
 
     def get_numb_of_customers(self):
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         numb_of_customers, numb_of_customers_past = mydb.select_numb_of_customers()
         mydb.close
         return numb_of_customers, numb_of_customers_past
@@ -676,16 +673,15 @@ class Home(UserControl):
         if variation == 0:
             self.text_variation_customers.color = "on_surface_variant"
             self.icon.color = "on_surface_variant"
-            self.icon.name = icons.ARROW_RIGHT_OUTLINED
+            self.icon.name = Icons.ARROW_RIGHT_OUTLINED
         else:
             self.text_variation_customers.color = "green"
             self.icon.color = "green"
-            self.icon.name = icons.ARROW_DROP_UP_OUTLINED
+            self.icon.name = Icons.ARROW_DROP_UP_OUTLINED
         self.update()
         
     def get_today_sales_billing(self):
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         result = mydb.select_today_sales_billing()
         mydb.close()
         return result
@@ -697,7 +693,6 @@ class Home(UserControl):
 
     def get_numb_of_products_and_stock(self):
         mydb = DashboardDatabase(self.route)
-        mydb.connect()
         result = mydb.select_numb_of_products_and_stock()
         mydb.close()
         return result

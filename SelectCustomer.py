@@ -1,7 +1,7 @@
 from flet import (
     DataTable, TextButton, TextField, IconButton, Text, Row, 
     Column, ListView, MainAxisAlignment, AlertDialog, DataColumn,
-    DataRow, DataCell, icons,
+    DataRow, DataCell, Icons,
 )
 from Database import CustomerDatabase
 
@@ -14,7 +14,7 @@ class SelectCustomer(AlertDialog):
         self.modal = True
         self.title=Row(expand=True, controls=[Text("Selecione o Cliente:", width=600)])
 
-        self.tf_find_customer = TextField(label="Buscar...", expand=True, prefix_icon=icons.SEARCH_OUTLINED, on_change=self.find_customer)
+        self.tf_find_customer = TextField(label="Buscar...", expand=True, prefix_icon=Icons.SEARCH_OUTLINED, on_change=self.find_customer)
         self.btn_back = TextButton(text="Voltar", on_click=self.back_clicked)
         self.dt_customer = DataTable(
             expand=True,
@@ -58,12 +58,10 @@ class SelectCustomer(AlertDialog):
 
     def back_clicked(self, e):
         self.data = "back"
-        self.open = False
-        self.update()
+        e.page.close(self)
 
     def get_customer_data(self):
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.select_customers()
         mydb.close()
         return result
@@ -77,7 +75,7 @@ class SelectCustomer(AlertDialog):
                         DataCell(Text(str(data[0]))),
                         DataCell(Text(data[1])),
                         DataCell(Text(data[2])),
-                        DataCell(Row([IconButton(icon=icons.SENSOR_OCCUPIED_OUTLINED, icon_color="blue", data=data, tooltip="Selecionar", on_click=self.select_customer)])),
+                        DataCell(Row([IconButton(icon=Icons.SENSOR_OCCUPIED_OUTLINED, icon_color="blue", data=data, tooltip="Selecionar", on_click=self.select_customer)])),
                     ]
                 )
             )
@@ -89,7 +87,6 @@ class SelectCustomer(AlertDialog):
             return
         
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.find_customer(self.tf_find_customer.value)
         mydb.close()
         if result:
@@ -98,8 +95,7 @@ class SelectCustomer(AlertDialog):
 
     def select_customer(self, e):
         self.data = e.control.data
-        self.open = False
-        self.update()
+        e.page.close(self)
 
     async def verify_data(self):
         while self.data is None:

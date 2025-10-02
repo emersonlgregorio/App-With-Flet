@@ -1,6 +1,6 @@
-from flet import (UserControl, Row, Column, Container, VerticalDivider, CrossAxisAlignment, MainAxisAlignment)
+from flet import (Container, Row, Column, Container, VerticalDivider, CrossAxisAlignment, MainAxisAlignment)
 
-class ClassName(UserControl):
+class ClassName(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route

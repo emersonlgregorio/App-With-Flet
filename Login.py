@@ -1,37 +1,36 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, icons, colors, TextThemeStyle, OutlinedButton,
+from flet import (Container, Row, Column, Container, Text, TextField, Icons, Colors, TextThemeStyle, OutlinedButton,
                   MainAxisAlignment, CrossAxisAlignment, alignment, padding, BoxShadow, Offset, ShadowBlurStyle)
 from Database import UserDatabase
 from Notification import Notification
 from CreateFirstAdmin import CreateFirstAdmin
 
-class Login(UserControl):
+class Login(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
-
-    def build(self):
-        self.text_user = TextField(label="Usuário", prefix_icon=icons.PERSON_2_OUTLINED, expand=True, autofocus=True, on_change=self.analyze_to_enable_button)
-        self.text_password = TextField(label="Senha", prefix_icon=icons.LOCK_OUTLINE_ROUNDED, expand=True, password=True, can_reveal_password=True, on_change=self.analyze_to_enable_button)
-        self.btn_login = OutlinedButton(text="Login", width=240, icon=icons.LOGIN_OUTLINED, disabled=True, on_click=self.login_clicked)
-        return Container(
-            #bgcolor='black',
+        
+        self.text_user = TextField(label="Usuário", prefix_icon=Icons.PERSON_2_OUTLINED, expand=True, autofocus=True, on_change=self.analyze_to_enable_button)
+        self.text_password = TextField(label="Senha", prefix_icon=Icons.LOCK_OUTLINE_ROUNDED, expand=True, password=True, can_reveal_password=True, on_change=self.analyze_to_enable_button)
+        self.btn_login = OutlinedButton(text="Login", width=240, icon=Icons.LOGIN_OUTLINED, disabled=True, on_click=self.login_clicked)
+        
+        # Configurar o Container diretamente
+        self.expand = True
+        self.alignment = alignment.center
+        self.content = Row(
             expand=True,
-            alignment=alignment.center,
-            content=Row(
-                expand=True,
-                alignment=MainAxisAlignment.CENTER,
-                vertical_alignment=CrossAxisAlignment.CENTER,
-                controls=[
+            alignment=MainAxisAlignment.CENTER,
+            vertical_alignment=CrossAxisAlignment.CENTER,
+            controls=[
                     Container(
                         padding=padding.only(60, 34, 60, 20),
-                        bgcolor=colors.SURFACE,
+                        bgcolor=Colors.SURFACE,
                         border_radius=10,
                         width=500,
                         height=360,
                         shadow=BoxShadow(
                             spread_radius=5,
                             blur_radius=5,
-                            color=colors.GREY_300,
+                            color=Colors.GREY_300,
                             offset=Offset(1,1),
                             blur_style=ShadowBlurStyle.NORMAL,
                         ),
@@ -69,18 +68,16 @@ class Login(UserControl):
                     )
                 ]
             )
-        )
     
     def initialize(self):
-        if not self.route.bar.scheduler.running:
-            self.route.bar.scheduler.start()
+        # O timer já está rodando automaticamente no Appbar
+        pass
     
     def verify_count_of_users(self):
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.select_users_count()
         mydb.close()
-        if result == "0":
+        if result == 0:
             return False
         return True
 
@@ -104,12 +101,11 @@ class Login(UserControl):
     def login(self):
         data = [self.text_user.value, self.text_password.value]
         mydb = UserDatabase(self.route)
-        mydb.connect()
         name, permission = mydb.login_verify(data)
         mydb.close()
 
         if name is None:
-            Notification(self.page, 'Usuário ou senha incorretos!', 'red').show_message()
+            Notification(self.route.page, 'Usuário ou senha incorretos!', 'red').show_message()
             return
         self.go_to_home(name, permission)
 

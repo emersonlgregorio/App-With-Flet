@@ -1,5 +1,5 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, IconButton, DataTable, 
-                  DataRow, DataColumn, DataCell, icons, VerticalDivider, ListView, Dropdown, dropdown,
+from flet import (Container, Row, Column, Container, Text, TextField, IconButton, DataTable, 
+                  DataRow, DataColumn, DataCell, Icons, VerticalDivider, ListView, Dropdown, dropdown,
                   OutlinedButton, FontWeight, CrossAxisAlignment, MainAxisAlignment, KeyboardEvent)
 from Database import UserDatabase
 from datetime import date
@@ -7,7 +7,7 @@ import bcrypt
 from ConfirmDialog import ConfirmDialog
 from Notification import Notification
 
-class Users(UserControl):
+class Users(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
@@ -30,20 +30,20 @@ class Users(UserControl):
                         DataCell(Text("John Player Special")),
                         DataCell(Text("JPS_Special")),
                         DataCell(Text("Admin")),
-                        DataCell(Row([IconButton(icon=icons.EDIT, icon_color='blue'), IconButton(icon=icons.DELETE, icon_color='red')])),
+                        DataCell(Row([IconButton(icon=Icons.EDIT, icon_color='blue'), IconButton(icon=Icons.DELETE, icon_color='red')])),
                     ],
                 ),
             ],
         )
 
         self.new_user_text = Text('Novo Usuário', size=18, weight=FontWeight.W_500)
-        self.tf_name = TextField(autofocus=True, label='Nome', prefix_icon=icons.PERSON_2_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
-        self.tf_user = TextField(label='Usuário', prefix_icon=icons.ASSIGNMENT_IND_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
-        self.dp_access = Dropdown(label='Acesso', options=[dropdown.Option('Usuario'), dropdown.Option('Admin')], value="Admin", prefix_icon=icons.MANAGE_ACCOUNTS_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
-        self.tf_pass1 = TextField(label='Insira a senha', password=True, prefix_icon=icons.PASSWORD, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
-        self.tf_pass2 = TextField(label='Repita a senha', password=True, prefix_icon=icons.PASSWORD, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
-        self.btn_register_user = OutlinedButton(text='Cadastrar', disabled=True, icon=icons.ADD_OUTLINED, width=140, on_click=self.btn_save_edit_clicked)
-        self.btn_cancel_edition = OutlinedButton(text='Cancelar',icon=icons.CANCEL_OUTLINED, visible=False, width=140, on_click=self.edit_cancelled)
+        self.tf_name = TextField(autofocus=True, label='Nome', prefix_icon=Icons.PERSON_2_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
+        self.tf_user = TextField(label='Usuário', prefix_icon=Icons.ASSIGNMENT_IND_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
+        self.dp_access = Dropdown(label='Acesso', options=[dropdown.Option('Usuario'), dropdown.Option('Admin')], value="Admin", prefix_icon=Icons.MANAGE_ACCOUNTS_ROUNDED, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
+        self.tf_pass1 = TextField(label='Insira a senha', password=True, prefix_icon=Icons.PASSWORD, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
+        self.tf_pass2 = TextField(label='Repita a senha', password=True, prefix_icon=Icons.PASSWORD, on_change=self.analyze_register_user, on_focus=self.on_enter_fields)
+        self.btn_register_user = OutlinedButton(text='Cadastrar', disabled=True, icon=Icons.ADD_OUTLINED, width=140, on_click=self.btn_save_edit_clicked)
+        self.btn_cancel_edition = OutlinedButton(text='Cancelar',icon=Icons.CANCEL_OUTLINED, visible=False, width=140, on_click=self.edit_cancelled)
 
         # Sequencia de tabulação do formulário:
         self.route.page.on_keyboard_event = self.on_keyboard
@@ -147,12 +147,10 @@ class Users(UserControl):
 
     def register_user(self, e):        
         today = date.today()
-        form_date = today.strftime('%Y-%m-%d')
         hashed_pass = self.create_hash(self.tf_pass1.value)
 
         mydb = UserDatabase(self.route)
-        mydb.connect()
-        fulldataset = [self.tf_name.value, self.tf_user.value, hashed_pass, form_date, self.dp_access.value]
+        fulldataset = [self.tf_name.value, self.tf_user.value, hashed_pass, today, self.dp_access.value]
         result = mydb.register_user(fulldataset)
         mydb.close()
 
@@ -168,7 +166,6 @@ class Users(UserControl):
     def fill_in_table_users(self):
         self.dt_users.rows.clear()
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.select_all_users()
         mydb.close()
 
@@ -180,7 +177,26 @@ class Users(UserControl):
                         DataCell(Text(data[1])),
                         DataCell(Text(data[2])),
                         DataCell(Text(data[3])),
-                        DataCell(Row([IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', tooltip="Editar", data=data, on_click=self.edit_clicked), IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', tooltip="Excluir", data=data, on_click=self.delete_clicked)])),
+                        DataCell(
+                            Row(
+                                [
+                                    IconButton(
+                                        icon=Icons.EDIT_OUTLINED, 
+                                        icon_color='blue', 
+                                        tooltip="Editar", 
+                                        data=data, 
+                                        on_click=self.edit_clicked
+                                    ), 
+                                    IconButton(
+                                        icon=Icons.DELETE_OUTLINED, 
+                                        icon_color='red', 
+                                        tooltip="Excluir", 
+                                        data=data, 
+                                        on_click=self.delete_clicked
+                                    )
+                                ]
+                            )
+                        ),
                     ],
                 )
             )
@@ -244,17 +260,16 @@ class Users(UserControl):
 
     def edit_clicked(self, e):
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.select_one_user(e.control.data[0])
         mydb.close()
 
         self.new_user_text.value = 'Editar Usuário'
-        self.tf_name.value = result[1]
-        self.tf_user.value = result[2]
-        self.dp_access.value = result[5]
+        self.tf_name.value = result.name
+        self.tf_user.value = result.user
+        self.dp_access.value = result.acesso
         
         self.btn_register_user.text = 'Salvar'
-        self.btn_register_user.data = result[0]
+        self.btn_register_user.data = result.idUser
         self.btn_cancel_edition.visible=True
         self.update()
 
@@ -270,7 +285,6 @@ class Users(UserControl):
         hashed_pass = self.create_hash(self.tf_pass1.value)
         fulldata = [self.btn_register_user.data, self.tf_name.value, self.tf_user.value, hashed_pass, today, self.dp_access.value]
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.update_user(fulldata)
         mydb.close()
         if result == 'success':
@@ -295,29 +309,44 @@ class Users(UserControl):
         return e.control.data[1]
 
     def delete_clicked(self, e):
+        print(f"🔍 Botão excluir clicado!")
         name = self.get_user_to_be_deleted(e).upper()
+        print(f"🔍 Nome do usuário a ser excluído: {name}")
         if name == self.route.config.user_name:
             Notification(self.route.page, "Não é possível excluir o próprio cadastro de administrador!", "orange").show_message()
             return
-        self.get_user_to_be_deleted(e)
-        dialog = ConfirmDialog(self.delete_user, "Por favor, confirme:", 'Tem certeza que deseja excluir o usuário?')
-        dialog.data = e.control.data[0]
-        self.page.dialog = dialog
-        dialog.open = True
+        
+        user_id = e.control.data[0]
+        print(f"🔍 ID do usuário a ser excluído: {user_id}")
+        
+        # Criar e exibir diálogo de confirmação usando o padrão oficial do Flet
+        dialog = ConfirmDialog(
+            self.delete_user, 
+            "Confirmar Exclusão", 
+            f"Tem certeza que deseja excluir o usuário '{name}'?"
+        )
+        dialog.data = user_id
+        print(f"🔍 Diálogo criado: {dialog}")
+        
+        # Usar page.open() em vez de dialog.open = True
+        self.route.page.open(dialog)
+        print(f"🔍 Diálogo aberto usando page.open()")
         self.edit_cancelled(e)
-        self.route.page.update()
 
     def delete_user(self, id):
+        print(f"🔍 Users: Método delete_user chamado com ID: {id}")
+        print(f"🔍 Tentando excluir usuário ID: {id}")
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.delete_user(id)
         mydb.close()
         
+        print(f"🔍 Resultado da exclusão: {result}")
+        
         if result == 'success':
-            Notification(self.page, 'Usuário excluído com sucesso!', 'green').show_message()
+            Notification(self.route.page, 'Usuário excluído com sucesso!', 'green').show_message()
             self.fill_in_table_users()
         else:
-            Notification(self.page, 'Erro ao excluir o usuário!', 'red').show_message()
+            Notification(self.route.page, 'Erro ao excluir o usuário!', 'red').show_message()
         
     def on_enter_fields(self, e):
         self.label = e.control.label
@@ -327,7 +356,6 @@ class Users(UserControl):
             self.fill_in_table_users()
             return
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.find_user(self.tf_find_user.value)
         mydb.close()
 
@@ -340,7 +368,7 @@ class Users(UserControl):
                         DataCell(Text(data[1])),
                         DataCell(Text(data[2])),
                         DataCell(Text(data[3])),
-                        DataCell(Row([IconButton(icon=icons.EDIT_OUTLINED, icon_color='blue', tooltip="Editar", data=data, on_click=self.edit_clicked), IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', tooltip="Excluir", data=data, on_click=self.delete_clicked)])),
+                        DataCell(Row([IconButton(icon=Icons.EDIT_OUTLINED, icon_color='blue', tooltip="Editar", data=data, on_click=self.edit_clicked), IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', tooltip="Excluir", data=data, on_click=self.delete_clicked)])),
                     ],
                 )
             )

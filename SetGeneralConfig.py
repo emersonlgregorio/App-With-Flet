@@ -1,5 +1,5 @@
 from flet import (
-    TextButton, Text, Row, Dropdown, PopupMenuButton, PopupMenuItem, icons, colors,
+    TextButton, Text, Row, Dropdown, PopupMenuButton, PopupMenuItem, Icons, Colors,
     Column, MainAxisAlignment, AlertDialog, dropdown, Icon, Theme, Checkbox, TextField,
     Divider, RadioGroup, Radio, ThemeMode
 )
@@ -15,13 +15,13 @@ class SetGeneralConfig(AlertDialog):
 
         self.dd_color_theme = Dropdown(dense=True, expand=True, label="Tema",value="Claro", options=[dropdown.Option('Claro'), dropdown.Option('Escuro')], on_change=self.theme_mode_changed)
         self.pmbtn_color_seed = PopupMenuButton(
-            icon=icons.COLOR_LENS_OUTLINED,
+            icon=Icons.COLOR_LENS_OUTLINED,
             tooltip="Trocar cor do tema",
             items=[
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.PURPLE_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.PURPLE_300),
                             Text('Roxo')
                         ]
                     ),
@@ -30,7 +30,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.ORANGE_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.ORANGE_300),
                             Text('Laranja')
                         ]
                     ),
@@ -39,7 +39,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.GREEN_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.GREEN_300),
                             Text('Verde')
                         ]
                     ),
@@ -48,7 +48,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.RED_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.RED_300),
                             Text('Vermelho')
                         ]
                     ),
@@ -57,7 +57,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.BLUE_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.BLUE_300),
                             Text('Azul')
                         ]
                     ),
@@ -66,7 +66,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.YELLOW_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.YELLOW_300),
                             Text('Amarelo')
                         ]
                     ),
@@ -75,7 +75,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.INDIGO_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.INDIGO_300),
                             Text('Indigo')
                         ]
                     ),
@@ -84,7 +84,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.TEAL_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.TEAL_300),
                             Text('Teal')
                         ]
                     ),
@@ -93,7 +93,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.LIME_300),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.LIME_300),
                             Text('Lime')
                         ]
                     ),
@@ -102,7 +102,7 @@ class SetGeneralConfig(AlertDialog):
                 PopupMenuItem(
                     content=Row(
                         controls=[
-                            Icon(icons.COLOR_LENS_OUTLINED, color=colors.BROWN_400),
+                            Icon(Icons.COLOR_LENS_OUTLINED, color=Colors.BROWN_400),
                             Text('Marrom')
                         ]
                     ),
@@ -201,10 +201,10 @@ class SetGeneralConfig(AlertDialog):
     def theme_mode_changed(self, e):
         if self.dd_color_theme.value == "Claro":
             self.route.page.theme_mode = ThemeMode.LIGHT
-            self.route.bar.btn_change_theme.icon = icons.DARK_MODE_OUTLINED
+            self.route.bar.btn_change_theme.icon = Icons.DARK_MODE_OUTLINED
         else:
             self.route.page.theme_mode = ThemeMode.DARK
-            self.route.bar.btn_change_theme.icon = icons.WB_SUNNY_OUTLINED
+            self.route.bar.btn_change_theme.icon = Icons.WB_SUNNY_OUTLINED
         
         self.route.page.update()
 

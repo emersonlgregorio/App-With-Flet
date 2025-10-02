@@ -4,7 +4,7 @@ from flet import (
 )
 import json
 from cryptography.fernet import Fernet
-import mysql.connector
+import sqlite3
 
 from Notification import Notification
 
@@ -71,15 +71,24 @@ class CreateConfig(AlertDialog):
     def test_connection(self, config_dict):
         config = json.loads(config_dict)
         try:
-            connection = mysql.connector.connect(
-                host=config["host"],
-                user=config["user"],
-                passwd=config["passwd"],
-                database=config["database"],
-                port=config["port"]
-            )
-            connection.close()
-            return True
+            # Para SQLite, apenas testar se consegue conectar
+            if config["host"] == "localhost" and config["user"] == "sqlite":
+                # Modo desenvolvimento com SQLite
+                connection = sqlite3.connect("infostore_dev.db")
+                connection.close()
+                return True
+            else:
+                # Modo produção com MySQL (manter compatibilidade)
+                import mysql.connector
+                connection = mysql.connector.connect(
+                    host=config["host"],
+                    user=config["user"],
+                    passwd=config["passwd"],
+                    database=config["database"],
+                    port=config["port"]
+                )
+                connection.close()
+                return True
         except Exception as e:
             Notification(self.route.page, f"Erro ao criar a conexão. Verifique os dados inseridos! {e}", "red").show_message()
             return False

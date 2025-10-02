@@ -1,4 +1,4 @@
-from flet import (TextField, icons, Text, OutlinedButton, Column, Row, AlertDialog, TextAlign)
+from flet import (TextField, Icons, Text, OutlinedButton, Column, Row, AlertDialog, TextAlign)
 
 from Database import UserDatabase
 from Notification import Notification
@@ -13,11 +13,11 @@ class CreateFirstAdmin(AlertDialog):
         self.modal = True
         self.title = Row(expand=True, alignment="center", controls=[Text(value="Cadastro do administrador", text_align=TextAlign.CENTER, width=350)])
 
-        self.tf_name = TextField(autofocus=True, label='Nome', prefix_icon=icons.PERSON_2_ROUNDED, on_change=self.validate_fields)
-        self.tf_user = TextField(label='Usuário', prefix_icon=icons.ASSIGNMENT_IND_ROUNDED, on_change=self.validate_fields)
-        self.tf_pass1 = TextField(label='Insira a senha', password=True, prefix_icon=icons.PASSWORD, on_change=self.validate_fields)
-        self.tf_pass2 = TextField(label='Repita a senha', password=True, prefix_icon=icons.PASSWORD, on_change=self.validate_fields)
-        self.btn_register_user = OutlinedButton(text='Cadastrar', disabled=True, icon=icons.ADD_OUTLINED, width=140, on_click=self.register_admin)
+        self.tf_name = TextField(autofocus=True, label='Nome', prefix_icon=Icons.PERSON_2_ROUNDED, on_change=self.validate_fields)
+        self.tf_user = TextField(label='Usuário', prefix_icon=Icons.ASSIGNMENT_IND_ROUNDED, on_change=self.validate_fields)
+        self.tf_pass1 = TextField(label='Insira a senha', password=True, prefix_icon=Icons.PASSWORD, on_change=self.validate_fields)
+        self.tf_pass2 = TextField(label='Repita a senha', password=True, prefix_icon=Icons.PASSWORD, on_change=self.validate_fields)
+        self.btn_register_user = OutlinedButton(text='Cadastrar', disabled=True, icon=Icons.ADD_OUTLINED, width=140, on_click=self.register_admin)
 
         self.actions = [
             Column(
@@ -83,7 +83,6 @@ class CreateFirstAdmin(AlertDialog):
     def register_admin(self, e):
         fulldataset = self.prepare_data()
         mydb = UserDatabase(self.route)
-        mydb.connect()
         result = mydb.register_user(fulldataset)
         mydb.close()
 

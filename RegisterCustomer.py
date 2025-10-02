@@ -1,5 +1,5 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, IconButton, DataTable, OutlinedButton, 
-                  DataRow, DataColumn, DataCell, icons, AlertDialog, TextThemeStyle, TextAlign,
+from flet import (Container, Row, Column, Container, Text, TextField, IconButton, DataTable, OutlinedButton, 
+                  DataRow, DataColumn, DataCell, Icons, AlertDialog, TextThemeStyle, TextAlign,
                   VerticalDivider, ListView, TextButton, MainAxisAlignment, CrossAxisAlignment)
 from PYBRDOC import CPF, Cnpj
 from datetime import date
@@ -8,7 +8,7 @@ from Database import CustomerDatabase, SalesDatabase
 from Notification import Notification
 from Validator import Validator
 
-class RegisterCustomer(UserControl):
+class RegisterCustomer(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
@@ -22,9 +22,11 @@ class RegisterCustomer(UserControl):
         self.tf_phone = TextField(label='Telefone', expand=2, on_change=self.analyze_register_customer)
         self.tf_email = TextField(label='E-mail', expand=3, on_change=self.analyze_register_customer)
         self.tf_observ = TextField(label='Observação', expand=True, on_change=self.analyze_register_customer)
-        self.btn_add_adress = IconButton(tooltip='Adicionar Endereço', icon=icons.ADD_ROAD_OUTLINED, icon_size=32, on_click=self.add_adress_clicked)
-        self.btn_add_save_customer = OutlinedButton(text='Salvar', icon=icons.SAVE_OUTLINED, on_click=self.add_save_clicked)
-        self.btn_back = IconButton(tooltip='Voltar', icon=icons.ARROW_BACK_OUTLINED, icon_size=32, on_click=self.back_clicked)
+        self.btn_add_adress = IconButton(tooltip='Adicionar Endereço', icon=Icons.ADD_ROAD_OUTLINED, icon_size=32, on_click=self.add_adress_clicked)
+        self.btn_save_exit = OutlinedButton(text='Salvar e Sair', icon=Icons.SAVE_OUTLINED, on_click=self.save_exit_clicked)
+        self.btn_save_view = OutlinedButton(text='Salvar e Visualizar', icon=Icons.VISIBILITY_OUTLINED, on_click=self.save_view_clicked)
+        self.btn_save_new = OutlinedButton(text='Salvar e Novo', icon=Icons.ADD_OUTLINED, on_click=self.save_new_clicked)
+        self.btn_back = IconButton(tooltip='Voltar', icon=Icons.ARROW_BACK_OUTLINED, icon_size=32, on_click=self.back_clicked)
         self.text_total = Text('R$ 350,00', style=TextThemeStyle.TITLE_MEDIUM)
         
         # Dialog to register adress:
@@ -77,7 +79,7 @@ class RegisterCustomer(UserControl):
         self.dt_order_history = DataTable(
             column_spacing=15,
             divider_thickness=0.4,
-            #heading_row_color=colors.ON_INVERSE_SURFACE,
+            #heading_row_color=Colors.ON_INVERSE_SURFACE,
             expand=True,
             columns=[
                 DataColumn(Text('Pedido')), 
@@ -147,8 +149,11 @@ class RegisterCustomer(UserControl):
                                             ),
                                             Row(
                                                 alignment=MainAxisAlignment.END,
+                                                spacing=10,
                                                 controls=[
-                                                    self.btn_add_save_customer,
+                                                    self.btn_save_exit,
+                                                    self.btn_save_view,
+                                                    self.btn_save_new,
                                                 ]
                                             ),
                                         ]
@@ -198,14 +203,14 @@ class RegisterCustomer(UserControl):
                 page_content,
             ]
         )
-        return content
-    
+        # Configurar o Container diretamente
+
+        self.content = content
     def add_adress_clicked(self, e):
         for control in [self.tf_adress, self.tf_city, self.tf_UF, self.tf_CEP]:
             control.value = ''
-        self.route.page.dialog = self.dialog
-        self.dialog.open = True
-        self.route.page.update()
+        # Usar page.open() em vez de dialog.open = True
+        self.route.page.open(self.dialog)
     
     def ok_clicked(self, e):
         data = (str(self.tf_CPF.value), self.tf_adress.value, self.tf_city.value, self.tf_UF.value, self.tf_CEP.value)
@@ -217,19 +222,17 @@ class RegisterCustomer(UserControl):
                     DataCell(Text(value=self.tf_city.value)),
                     DataCell(Text(value=self.tf_UF.value)),
                     DataCell(Text(value=self.tf_CEP.value)),
-                    DataCell(Row([IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=len(self.adress_list)-1, on_click=self.delete_adress)])),
+                    DataCell(Row([IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=len(self.adress_list)-1, on_click=self.delete_adress)])),
                 ],
             ),
         )
         
         self.dt_adress.update()
-        self.dialog.open = False
+        e.page.close(self.dialog)
         self.analyze_register_customer(e)
-        self.route.page.update()
 
     def cancel_clicked(self, e):
-        self.dialog.open = False
-        self.route.page.update()
+        e.page.close(self.dialog)
 
     def delete_adress(self, e):
         del self.adress_list[e.control.data]
@@ -246,7 +249,7 @@ class RegisterCustomer(UserControl):
                         DataCell(Text(value=data[2])),
                         DataCell(Text(value=data[3])),
                         DataCell(Text(value=data[4])),
-                        DataCell(Row([IconButton(icon=icons.DELETE_OUTLINED, icon_color='red', data=row, on_click=self.delete_adress)])),
+                        DataCell(Row([IconButton(icon=Icons.DELETE_OUTLINED, icon_color='red', data=row, on_click=self.delete_adress)])),
                     ],
                 ),
             )
@@ -297,7 +300,7 @@ class RegisterCustomer(UserControl):
             and self.tf_phone.value == ""
             and self.tf_email.value == ""
         ):
-            self.btn_add_save_customer.disabled = True
+            self.set_buttons_state(True)  # Disabled
             for control in [self.tf_name, self.tf_CPF, self.tf_phone, self.tf_email]:
                 control.error_text = ""
             self.update()
@@ -310,10 +313,10 @@ class RegisterCustomer(UserControl):
         ):
             if self.check_cpf_cnpj(e) == False:
                 self.tf_CPF.error_text = 'CPF ou CNPJ inválido!'
-                self.btn_add_save_customer.disabled = True
+                self.set_buttons_state(True)  # Disabled
                 self.update()
                 return
-            self.btn_add_save_customer.disabled = False
+            self.set_buttons_state(False)  # Enabled
             for control in [self.tf_name, self.tf_CPF, self.tf_phone, self.tf_email]:
                 control.error_text = ""
                 control.update()
@@ -324,16 +327,22 @@ class RegisterCustomer(UserControl):
         for control in [self.tf_name, self.tf_CPF]:
             if control.value == "":
                 control.error_text = "Campo Obrigatório!"
-                self.btn_add_save_customer.disabled = True
+                self.set_buttons_state(True)  # Disabled
             else:
                 control.error_text = ""
         self.update()
+
+    def set_buttons_state(self, disabled):
+        """Controla o estado dos botões de salvar"""
+        self.btn_save_exit.disabled = disabled
+        self.btn_save_view.disabled = disabled
+        self.btn_save_new.disabled = disabled
 
     def clear_fields(self):
         for control in [self.tf_id, self.tf_name, self.tf_CPF, self.tf_phone, self.tf_email, self.tf_observ]:
             control.value = ""
             control.error_text = ""
-        self.btn_add_save_customer.disabled = True
+        self.set_buttons_state(True)  # Disabled
         self.dt_adress.rows.clear()
         self.dt_order_history.rows.clear()
         self.text_total.value = ""
@@ -343,9 +352,8 @@ class RegisterCustomer(UserControl):
 
     def register_customer(self, e):
         today = date.today()
-        data_customer = [self.tf_name.value.upper(),  str(self.tf_CPF.value), self.tf_phone.value, self.tf_email.value, self.tf_observ.value, today.strftime('%Y-%m-%d')]
+        data_customer = [self.tf_name.value.upper(),  str(self.tf_CPF.value), self.tf_phone.value, self.tf_email.value, self.tf_observ.value, today]
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.register_customer(data_customer)
 
         if result != 'success':
@@ -362,16 +370,19 @@ class RegisterCustomer(UserControl):
         else:
             Notification(self.page, f"Erro ao registrar cliente: {result}", "red").show_message()
         
-        self.clear_fields()
+        # Não limpar campos automaticamente - deixar para os botões específicos decidirem
         self.route.page.update()
 
     def load_customer(self, cpf_cnpj):
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         data_customer = mydb.select_one_customer(cpf_cnpj)
         data_adress = mydb.select_adresses(cpf_cnpj)
         mydb.close()
-        self.adress_list = [(cpf_cnpj,) + tupla for tupla in data_adress] # inserts cpf_cnpj in the 0 index of each tuple
+        # Corrigir: garantir que data_adress seja uma lista de tuplas
+        if data_adress:
+            self.adress_list = [(cpf_cnpj,) + tuple(tupla) for tupla in data_adress] # inserts cpf_cnpj in the 0 index of each tuple
+        else:
+            self.adress_list = []
 
         self.tf_id.value = str(data_customer[0][0])
         self.tf_name.value = data_customer[0][1]
@@ -386,7 +397,6 @@ class RegisterCustomer(UserControl):
         data_customer = [int(self.tf_id.value), self.tf_name.value, str(self.tf_CPF.value), self.tf_phone.value, self.tf_email.value, self.tf_observ.value,]
 
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result = mydb.update_customer(data_customer)
         
         if result != 'success':
@@ -403,14 +413,57 @@ class RegisterCustomer(UserControl):
         else:
             Notification(self.page, f'Erro ao atualizar o cliente: "{data_customer[1]}"! Erro: {result}', 'red').show_message()
             
-        self.clear_fields()
+        # Não limpar campos automaticamente - deixar para os botões específicos decidirem
         self.route.page.update()
 
-    def add_save_clicked(self, e):
+    def save_exit_clicked(self, e):
+        """Salva e volta para a grid de clientes"""
         if self.tf_id.value == "":
             self.register_customer(e)
         else:
             self.update_customer(e)
+        # Voltar para a grid de clientes
+        self.route.page.go("/customers")
+        self.route.bar.set_title('Clientes')
+        self.route.page.update()
+
+    def save_view_clicked(self, e):
+        """Salva e mantém em modo de edição"""
+        if self.tf_id.value == "":
+            # Se é novo cliente, registrar primeiro
+            self.register_customer(e)
+            # Aguardar um pouco e depois carregar em modo de edição
+            import time
+            time.sleep(0.1)  # Pequena pausa para garantir que o registro foi salvo
+            try:
+                self.load_customer(self.tf_CPF.value)
+                self.route.bar.set_title('Editar Cliente')
+                self.route.register_customer.text_new_customer.value = "Editar Cliente:"
+            except:
+                # Se não conseguir carregar, manter como novo cliente
+                pass
+        else:
+            # Se já é edição, apenas atualizar
+            self.update_customer(e)
+            # Recarregar os dados
+            try:
+                self.load_customer(self.tf_CPF.value)
+            except:
+                # Se não conseguir recarregar, manter os dados atuais
+                pass
+        self.route.page.update()
+
+    def save_new_clicked(self, e):
+        """Salva e inicia um novo cadastro"""
+        if self.tf_id.value == "":
+            self.register_customer(e)
+        else:
+            self.update_customer(e)
+        # Limpar campos para novo cadastro
+        self.clear_fields()
+        self.route.bar.set_title('Cadastrar Novo Cliente')
+        self.route.register_customer.text_new_customer.value = "Novo Cliente:"
+        self.route.page.update()
 
     def fill_in_history_table(self, fulldata):
         self.dt_order_history.rows.clear()
@@ -421,7 +474,7 @@ class RegisterCustomer(UserControl):
                         DataCell(Text(data[0])),
                         DataCell(Text(data[1])),
                         DataCell(Text(f"R${Validator.format_to_currency(data[2])}")),
-                        DataCell(IconButton(icon=icons.VISIBILITY_OUTLINED, icon_color="blue", data=data[0], tooltip="Visualizar pedido", on_click=self.see_sale_clicked))
+                        DataCell(IconButton(icon=Icons.VISIBILITY_OUTLINED, icon_color="blue", data=data[0], tooltip="Visualizar pedido", on_click=self.see_sale_clicked))
                     ]
                 )
             )
@@ -429,7 +482,6 @@ class RegisterCustomer(UserControl):
 
     def get_sales_data_from_db(self):
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.select_sales_history(self.tf_id.value)
         mydb.close()
         total = sum(map(lambda x: x[2], result))

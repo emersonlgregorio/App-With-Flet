@@ -1,5 +1,5 @@
-from flet import (UserControl, Row, Column, Container, Text, TextField, IconButton, DataTable, MainAxisAlignment,
-                  DataRow, DataColumn, DataCell, icons, colors, TextStyle, Card, FontWeight, TextAlign, Divider,
+from flet import (Container, Row, Column, Container, Text, TextField, IconButton, DataTable, MainAxisAlignment,
+                  DataRow, DataColumn, DataCell, Icons, Colors, TextStyle, Card, FontWeight, TextAlign, Divider,
                   ListView, border_radius, padding, border, FilePickerResultEvent, CrossAxisAlignment)
 
 from Validator import Validator
@@ -9,17 +9,17 @@ from ConfirmDialog import ConfirmDialog
 from Reports import SaleReport
 import contextlib
 
-class Sales(UserControl):
+class Sales(Container):
     def __init__(self, route):
         super().__init__()
         self.route = route
 
-        self.tf_find_sale = TextField(label="Buscar...", expand=True, dense=True, prefix_icon=icons.SEARCH_ROUNDED, on_submit=self.find_sale)
-        self.btn_new_sale = IconButton(icon=icons.ADD_SHOPPING_CART_ROUNDED, icon_color=colors.PRIMARY, tooltip="Nova Venda", icon_size=36, on_click=self.new_sale_clicked)
-        self.btn_filter_today = IconButton(icon=icons.TODAY_ROUNDED, selected_icon=icons.TODAY_ROUNDED, selected_icon_color=colors.PRIMARY, data="select_sales_from_today", tooltip="Vendas de Hoje", on_click=self.filter_buttons_clicked)
-        self.btn_filter_previous_seven = IconButton(icon=icons.DATE_RANGE_ROUNDED, selected_icon=icons.DATE_RANGE_ROUNDED, selected_icon_color=colors.PRIMARY, selected=True, data="select_sales_from_previous_seven", tooltip="Vendas dos Últimos Sete Dias", on_click=self.filter_buttons_clicked)
-        self.btn_filter_previous_thirty = IconButton(icon=icons.CALENDAR_MONTH_ROUNDED, selected_icon=icons.CALENDAR_MONTH_ROUNDED, selected_icon_color=colors.PRIMARY, data="select_sales_from_previous_tirthy", tooltip="Vendas dos Últimos Trinta Dias", on_click=self.filter_buttons_clicked)
-        self.btn_filter_all = IconButton(icon=icons.APPS_ROUNDED, selected_icon=icons.APPS_ROUNDED, selected_icon_color=colors.PRIMARY, tooltip="Mostrar Todas as Vendas", data="select_all_sales", on_click=self.filter_buttons_clicked)
+        self.tf_find_sale = TextField(label="Buscar...", expand=True, dense=True, prefix_icon=Icons.SEARCH_ROUNDED, on_submit=self.find_sale)
+        self.btn_new_sale = IconButton(icon=Icons.ADD_SHOPPING_CART_ROUNDED, icon_color=Colors.PRIMARY, tooltip="Nova Venda", icon_size=36, on_click=self.new_sale_clicked)
+        self.btn_filter_today = IconButton(icon=Icons.TODAY_ROUNDED, selected_icon=Icons.TODAY_ROUNDED, selected_icon_color=Colors.PRIMARY, data="select_sales_from_today", tooltip="Vendas de Hoje", on_click=self.filter_buttons_clicked)
+        self.btn_filter_previous_seven = IconButton(icon=Icons.DATE_RANGE_ROUNDED, selected_icon=Icons.DATE_RANGE_ROUNDED, selected_icon_color=Colors.PRIMARY, selected=True, data="select_sales_from_previous_seven", tooltip="Vendas dos Últimos Sete Dias", on_click=self.filter_buttons_clicked)
+        self.btn_filter_previous_thirty = IconButton(icon=Icons.CALENDAR_MONTH_ROUNDED, selected_icon=Icons.CALENDAR_MONTH_ROUNDED, selected_icon_color=Colors.PRIMARY, data="select_sales_from_previous_tirthy", tooltip="Vendas dos Últimos Trinta Dias", on_click=self.filter_buttons_clicked)
+        self.btn_filter_all = IconButton(icon=Icons.APPS_ROUNDED, selected_icon=Icons.APPS_ROUNDED, selected_icon_color=Colors.PRIMARY, tooltip="Mostrar Todas as Vendas", data="select_all_sales", on_click=self.filter_buttons_clicked)
         self.row_sales = Row(wrap=False, scroll="auto", expand=True, spacing=25)
         
         self.tf_id_sale = TextField(border="none", expand=3, label="Pedido nº:", value="Automático", text_size=16, read_only=True, text_style=TextStyle(weight=FontWeight.BOLD))
@@ -27,12 +27,12 @@ class Sales(UserControl):
         self.tf_CPF = TextField(border="none", expand=4, label="CPF:", value="92.791.243/0001-03", text_size=16, read_only=True, text_style=TextStyle(weight=FontWeight.BOLD))
         self.tf_date = TextField(border="none", expand=3, label="Data:", value="20/02/2020", text_size=16, read_only=True, text_style=TextStyle(weight=FontWeight.BOLD))
         self.tf_total_sale = TextField(border="none", expand=3, label="Total:", value="1.000.000,00", text_size=16, prefix_text="R$", read_only=True, text_style=TextStyle(weight=FontWeight.BOLD))
-        self.btn_print = IconButton(icon=icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", icon_color="primary", on_click=self.pdf_clicked)
+        self.btn_print = IconButton(icon=Icons.PICTURE_AS_PDF_OUTLINED, tooltip="Gerar arquivo .pdf", icon_color="primary", on_click=self.pdf_clicked)
         self.dt_products_sold = DataTable(                                            
             expand=True,
             column_spacing=5,
             divider_thickness=0.4,
-            #heading_row_color=colors.ON_INVERSE_SURFACE,
+            #heading_row_color=Colors.ON_INVERSE_SURFACE,
             border_radius=border_radius.all(5),
             columns=[
                 DataColumn(Text('ID')), 
@@ -61,7 +61,7 @@ class Sales(UserControl):
                         controls=[
                             Card(
                                 expand=True,
-                                surface_tint_color=colors.INVERSE_PRIMARY,
+                                surface_tint_color=Colors.INVERSE_PRIMARY,
                                 elevation = 1.5,
                                 content=Container(
                                     padding=padding.all(10),
@@ -96,7 +96,7 @@ class Sales(UserControl):
                         controls=[
                             Card(
                                 expand=True,
-                                surface_tint_color=colors.INVERSE_PRIMARY,
+                                surface_tint_color=Colors.INVERSE_PRIMARY,
                                 elevation = 1.5,
                                 content=Column(
                                     spacing=0,
@@ -104,7 +104,7 @@ class Sales(UserControl):
                                     controls=[
                                         Container(
                                             padding=padding.only(left=10, right=10),
-                                            border=border.only(bottom=border.BorderSide(1, colors.OUTLINE_VARIANT)),
+                                            border=border.only(bottom=border.BorderSide(1, Colors.OUTLINE_VARIANT)),
                                             content=Row(
                                                 controls=[
                                                     self.tf_id_sale,
@@ -144,8 +144,9 @@ class Sales(UserControl):
                 page_content,
             ]
         )
-        return content
-    
+        # Configurar o Container diretamente
+
+        self.content = content
     def initialize(self):
         print("Initializing Sales Page")
         self.tf_id_sale.value = ""
@@ -166,7 +167,6 @@ class Sales(UserControl):
 
     def get_sales_by_date(self, func_name):
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         func = getattr(mydb, func_name)
         result = func()
         mydb.close()
@@ -204,12 +204,12 @@ class Sales(UserControl):
                                     spacing=5,
                                     alignment="center",
                                     controls=[
-                                        IconButton(data=data[0], icon=icons.EDIT_OUTLINED,icon_color=colors.PRIMARY, tooltip="Editar Venda", scale=0.9, on_click=self.edit_sale_clicked),
+                                        IconButton(data=data[0], icon=Icons.EDIT_OUTLINED,icon_color=Colors.PRIMARY, tooltip="Editar Venda", scale=0.9, on_click=self.edit_sale_clicked),
                                         Text(f"Pedido n. {data[0]}", weight=FontWeight.BOLD, data=data[0]),
-                                        IconButton(data=data[0], icon=icons.DELETE_OUTLINED, icon_color=colors.ERROR, tooltip="Excluir Venda", scale=0.9, on_click=self.delete_clicked),
+                                        IconButton(data=data[0], icon=Icons.DELETE_OUTLINED, icon_color=Colors.ERROR, tooltip="Excluir Venda", scale=0.9, on_click=self.delete_clicked),
                                     ],
                                 ),
-                                Divider(height=1, color=colors.PRIMARY, opacity=0.5),
+                                Divider(height=1, color=Colors.PRIMARY, opacity=0.5),
                                 Row(
                                     spacing=15,
                                     alignment="start",
@@ -232,14 +232,12 @@ class Sales(UserControl):
 
     def get_one_sale_from_db(self, id_sale):
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.select_one_sale(id_sale)
         mydb.close()
         return result
 
     def get_all_sold_from_db(self, id_sale):
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.select_all_sold(id_sale)
         mydb.close()
         return result
@@ -302,7 +300,6 @@ class Sales(UserControl):
     
     def delete_sale(self, id_sale):        
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result_to_update_stock = mydb.select_all_sold(id_sale)
         result = mydb.delete_products_sold(id_sale)
 
@@ -334,7 +331,6 @@ class Sales(UserControl):
             self.fill_in_table_sales()
             return
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = mydb.find_sale(self.tf_find_sale.value)
         mydb.close()
 
@@ -342,7 +338,6 @@ class Sales(UserControl):
 
     def update_stock(self, data_to_update):
         mydb = ProductsDatabase(self.route)
-        mydb.connect()
         result = []
         for temp_data in data_to_update:
             result.append(mydb.update_stock([temp_data[1], temp_data[4]]))
@@ -369,7 +364,6 @@ class Sales(UserControl):
     
     def get_customer_data(self):
         mydb = CustomerDatabase(self.route)
-        mydb.connect()
         result_data = mydb.select_one_customer(self.tf_CPF.value)
         result_adress = mydb.select_adresses(self.tf_CPF.value)
         mydb.close()
@@ -416,7 +410,6 @@ class Sales(UserControl):
         e.control.update()
         
         mydb = SalesDatabase(self.route)
-        mydb.connect()
         result = self.get_sales_by_date(e.control.data)
         mydb.close()
         self.fill_in_table_sales(result)
